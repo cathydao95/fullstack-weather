@@ -1,0 +1,9 @@
+.form {
+  display: flex;
+  justify-content: center;
+}
+
+#city {
+  height: 1.5rem;
+  width: 200px;
+}

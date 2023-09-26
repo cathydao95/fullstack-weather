@@ -1,0 +1,18 @@
+.cityWeatherInfo {
+  text-align: center;
+}
+
+.info {
+  text-transform: capitalize;
+}
+
+.infoHeading {
+  font-weight: 800;
+  color: blue;
+}
+
+.noCity {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.25rem;
+}
