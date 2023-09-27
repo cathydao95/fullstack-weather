@@ -34,7 +34,7 @@ const Favorites = ({ userFavorites, setUserFavorites }) => {
   };
   return (
     <div className="favorites">
-      <h1>Favorites</h1>
+      <h1 className="favoritesTitle">User Favorites</h1>
       {userFavorites && (
         <div className="cardContainer">
           {userFavorites.map((user) => {

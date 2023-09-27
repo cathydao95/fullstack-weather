@@ -1,6 +1,8 @@
 import { useState } from "react";
 import WeatherCard from "./WeatherCard";
 import "./Form.css";
+import { getWeatherForLocation } from "../utils";
+import InputRow from "./InputRow";
 
 const Form = ({ setUserFavorites }) => {
   const [userInfo, setUserInfo] = useState({});
@@ -13,11 +15,8 @@ const Form = ({ setUserFavorites }) => {
     });
   };
 
-  const getWeatherForLocation = async () => {
-    const response = await fetch(
-      `http://localhost:8080/api/weather?city=${userInfo.favorite_city}`
-    );
-    const weatherData = await response.json();
+  const populateData = async (city) => {
+    let weatherData = await getWeatherForLocation(city);
     setWeatherData(weatherData.data);
     setShowWeatherCard(true);
   };
@@ -33,24 +32,11 @@ const Form = ({ setUserFavorites }) => {
   ) : (
     <div>
       <div className="searchContainer">
-        <input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Username"
-          autoComplete="off"
-          onChange={(e) => handleInput(e)}
-        ></input>
-        <input
-          type="text"
-          id="city"
-          name="favorite_city"
-          placeholder="Search for a city"
-          autoComplete="off"
-          onChange={(e) => handleInput(e)}
-        ></input>
-
-        <button className="searchBtn" onClick={getWeatherForLocation}>
+        <InputRow onChange={(e) => handleInput(e)} />
+        <button
+          className="searchBtn"
+          onClick={() => populateData(userInfo.favorite_city)}
+        >
           Get Weather
         </button>
       </div>

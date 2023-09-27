@@ -1,5 +1,6 @@
 import React from "react";
 import "./WeatherCard.css";
+import WeatherInfo from "./WeatherInfo";
 
 const WeatherCard = ({
   data,
@@ -37,21 +38,7 @@ const WeatherCard = ({
           Add to {userInfo.name}'s favorites{" "}
         </button>
       </div>
-      {data && data.name && (
-        <div className="cityWeatherInfo">
-          <h2 className="cityName info">{data.name}</h2>
-          <p className="temperature info">{data.main.temp}°</p>
-          <p className="weather info">{data.weather[0].description}</p>
-          <div className="tempContainer">
-            <p className="info">H: {data.main.temp_max}°</p>
-            <p className="info">L: {data.main.temp_min}°</p>
-          </div>
-          <img
-            className="icon"
-            src={`https://openweathermap.org/img/w/${data.weather[0].icon}.png`}
-          />
-        </div>
-      )}
+      {data && data.name && <WeatherInfo weatherData={data} />}
       {data && data.message && (
         <p className="noCity">No such city. Please enter a valid city</p>
       )}

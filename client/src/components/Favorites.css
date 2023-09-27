@@ -1,6 +1,9 @@
 .favorites {
   text-align: center;
 }
+.favoritesTitle {
+  padding: 4rem 0 0;
+}
 
 .cardContainer {
   display: grid;

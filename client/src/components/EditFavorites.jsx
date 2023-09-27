@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import "./EditFavorites.css";
+import { getWeatherForLocation } from "../utils";
+import WeatherInfo from "./WeatherInfo";
+import InputRow from "./InputRow";
 
 const EditFavorites = ({
   editingId,
@@ -9,6 +12,7 @@ const EditFavorites = ({
 }) => {
   const [userInfo, setUserInfo] = useState({ name: "", favorite_city: "" });
   const [weatherData, setWeatherData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleInput = (e) => {
     setUserInfo((prevInfo) => {
@@ -16,26 +20,21 @@ const EditFavorites = ({
     });
   };
 
-  const getWeatherForLocation = async (city) => {
-    const response = await fetch(
-      `http://localhost:8080/api/weather?city=${city}`
-    );
-    const weatherData = await response.json();
-
-    setWeatherData(weatherData.data);
+  const updateWeatherData = async (city) => {
+    let data = await getWeatherForLocation(city);
+    setWeatherData(data.data);
+    setIsLoading(false);
   };
 
   const getSingleUserFav = async () => {
     const response = await fetch(
       `http://localhost:8080/api/v1/users/${editingId}`
     );
-
     const {
       data: { user },
     } = await response.json();
-
     setUserInfo(user[0]);
-    getWeatherForLocation(user[0].favorite_city);
+    updateWeatherData(user[0].favorite_city);
   };
 
   useEffect(() => {
@@ -56,60 +55,34 @@ const EditFavorites = ({
     const {
       data: { updatedUser },
     } = await response.json();
-
     let updatedFavs = userFavorites.map((fav) =>
       fav.id === editingId ? updatedUser[0] : fav
     );
-
     setUserFavorites(updatedFavs);
-    getWeatherForLocation(updatedUser[0].favorite_city);
+    updateWeatherData(updatedUser[0].favorite_city);
   };
 
   return (
-    <div className="editContainer">
-      <div className="searchContainer">
-        <input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Username"
-          autoComplete="off"
-          value={userInfo.name}
-          onChange={(e) => handleInput(e)}
-        ></input>
-        <input
-          type="text"
-          id="city"
-          name="favorite_city"
-          placeholder="Search for a city"
-          autoComplete="off"
-          onChange={(e) => handleInput(e)}
-          value={userInfo.favorite_city}
-        ></input>
-
-        <button className="eventBtn" onClick={updateUserFav}>
-          Update
-        </button>
-        <button className="eventBtn" onClick={() => setIsEditing(false)}>
-          Back
-        </button>
-      </div>
-      {weatherData && weatherData.name && (
-        <div className="cityWeatherInfo">
-          <h2 className="cityName info">{weatherData.name}</h2>
-          <p className="temperature info">{weatherData.main.temp}°</p>
-          <p className="weather info">{weatherData.weather[0].description}</p>
-          <div className="tempContainer">
-            <p className="info">H: {weatherData.main.temp_max}°</p>
-            <p className="info">L: {weatherData.main.temp_min}°</p>
-          </div>
-          <img
-            className="icon"
-            src={`https://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`}
+    !isLoading && (
+      <div className="editContainer">
+        <div className="searchContainer">
+          <InputRow
+            nameValue={userInfo.name}
+            cityValue={userInfo.favorite_city}
+            onChange={(e) => handleInput(e)}
           />
+          <button className="eventBtn" onClick={updateUserFav}>
+            Update
+          </button>
+          <button className="eventBtn" onClick={() => setIsEditing(false)}>
+            Back
+          </button>
         </div>
-      )}
-    </div>
+        {weatherData && weatherData.name && (
+          <WeatherInfo weatherData={weatherData} />
+        )}
+      </div>
+    )
   );
 };
 
