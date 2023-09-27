@@ -1,0 +1,12 @@
+.editContainer {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(80, 156, 207);
+  top: 0;
+  padding: 5rem 0;
+}
+
+.cityWeatherInfo {
+  padding: 4rem 0;
+}
