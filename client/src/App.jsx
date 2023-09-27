@@ -18,7 +18,10 @@ const App = () => {
     <div>
       <h1 className="title">Weather App</h1>
       <Form userFavorite={userFavorites} setUserFavorites={setUserFavorites} />
-      <Favorites userFavorites={userFavorites} />
+      <Favorites
+        userFavorites={userFavorites}
+        setUserFavorites={setUserFavorites}
+      />
     </div>
   );
 };
