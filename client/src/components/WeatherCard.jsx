@@ -1,28 +1,57 @@
 import React from "react";
 import "./WeatherCard.css";
 
-const WeatherCard = ({ data, city }) => {
+const WeatherCard = ({
+  data,
+  setShowWeatherCard,
+  userInfo,
+  setUserFavorites,
+}) => {
+  console.log(data);
+
+  const addUserFav = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/JSON",
+        },
+        body: JSON.stringify(userInfo),
+      });
+
+      if (response.ok) {
+        let {
+          data: { newUser },
+        } = await response.json();
+        setUserFavorites((prevFavs) => [...prevFavs, newUser[0]]);
+        setShowWeatherCard(false);
+      }
+    } catch (error) {}
+  };
   return (
-    <div>
+    <div className="weatherContainer">
+      <div className="btnContainer">
+        <button className="btn" onClick={() => setShowWeatherCard(false)}>
+          Cancel
+        </button>
+        <button className="btn" onClick={(e) => addUserFav(e)}>
+          Add to {userInfo.name}'s favorites{" "}
+        </button>
+      </div>
       {data && data.name && (
         <div className="cityWeatherInfo">
-          <h2 className="cityName info">
-            <span>City:</span> {data.name}
-          </h2>
-          <p className="weather info">
-            <span className="infoHeading">Description:</span>{" "}
-            {data.weather[0].description}
-          </p>
+          <h2 className="cityName info">{data.name}</h2>
+          <p className="temperature info">{data.main.temp}°</p>
+          <p className="weather info">{data.weather[0].description}</p>
+          <div className="tempContainer">
+            <p className="info">H: {data.main.temp_max}°</p>
+            <p className="info">L: {data.main.temp_min}°</p>
+          </div>
           <img
+            className="icon"
             src={`https://openweathermap.org/img/w/${data.weather[0].icon}.png`}
           />
-          <p className="temperature info">
-            <span className="infoHeading">Temperature:</span> {data.main.temp}
-          </p>
-          <p className="feelsLike info">
-            <span className="infoHeading">Feels Like: </span>
-            {data.main.feels_like}
-          </p>
         </div>
       )}
       {data && data.message && (
