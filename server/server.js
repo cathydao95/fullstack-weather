@@ -56,12 +56,12 @@ app.get("/api/v1/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { rows: users } = await db.query("SELECT * FROM users WHERE id=$1", [
+    const { rows: user } = await db.query("SELECT * FROM users WHERE id=$1", [
       id,
     ]);
     res.status(200).json({
       status: "success",
-      data: { users },
+      data: { user },
     });
   } catch (error) {
     return res.status(500).json({ error: "Internal server error" });
@@ -71,11 +71,11 @@ app.get("/api/v1/users/:id", async (req, res) => {
 // CREATE USER
 app.post("/api/v1/users", async (req, res) => {
   try {
-    const { name, city } = req.body;
+    const { name, favorite_city } = req.body;
 
     const { rows: newUser } = await db.query(
       "INSERT INTO users (name, favorite_city) VALUES ($1, $2) RETURNING *",
-      [name, city]
+      [name, favorite_city]
     );
     res.status(200).json({
       status: "success",
@@ -90,11 +90,11 @@ app.post("/api/v1/users", async (req, res) => {
 app.put("/api/v1/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, city } = req.body;
+    const { name, favorite_city } = req.body;
 
     const { rows: updatedUser } = await db.query(
       "UPDATE users SET (name, favorite_city) = ($1, $2) WHERE id = $3 RETURNING *",
-      [name, city, id]
+      [name, favorite_city, id]
     );
     res.status(200).json({
       status: "success",
