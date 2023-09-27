@@ -7,8 +7,6 @@ const EditFavorites = ({
   userFavorites,
   setIsEditing,
 }) => {
-  console.log(editingId);
-
   const [userInfo, setUserInfo] = useState({ name: "", favorite_city: "" });
   const [weatherData, setWeatherData] = useState();
 
@@ -23,20 +21,19 @@ const EditFavorites = ({
       `http://localhost:8080/api/weather?city=${city}`
     );
     const weatherData = await response.json();
-    console.log("WEATHERDATA", weatherData.data);
+
     setWeatherData(weatherData.data);
   };
 
   const getSingleUserFav = async () => {
-    console.log("test1");
     const response = await fetch(
       `http://localhost:8080/api/v1/users/${editingId}`
     );
-    console.log("test2");
+
     const {
       data: { user },
     } = await response.json();
-    console.log(user);
+
     setUserInfo(user[0]);
     getWeatherForLocation(user[0].favorite_city);
   };
@@ -60,17 +57,14 @@ const EditFavorites = ({
       data: { updatedUser },
     } = await response.json();
 
-    console.log(userFavorites, "UF");
     let updatedFavs = userFavorites.map((fav) =>
       fav.id === editingId ? updatedUser[0] : fav
     );
 
-    console.log(updatedFavs);
     setUserFavorites(updatedFavs);
     getWeatherForLocation(updatedUser[0].favorite_city);
   };
 
-  console.log(userInfo);
   return (
     <div className="editContainer">
       <div className="searchContainer">

@@ -7,8 +7,6 @@ const WeatherCard = ({
   userInfo,
   setUserFavorites,
 }) => {
-  console.log(data);
-
   const addUserFav = async (e) => {
     e.preventDefault();
     try {

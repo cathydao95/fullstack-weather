@@ -24,7 +24,6 @@ app.get("/api/weather", (req, res) => {
   });
   const url = `https://api.openweathermap.org/data/2.5/weather?${params}`;
 
-  console.log(url);
   fetch(url)
     .then((res) => res.json())
     .then((data) => {
