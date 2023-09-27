@@ -13,11 +13,9 @@ const Form = ({ setUserFavorites }) => {
     });
   };
 
-  const handleSubmit = (e) => {};
-
   const getWeatherForLocation = async () => {
     const response = await fetch(
-      `http://localhost:8080/api/weather?city=${userInfo.city}`
+      `http://localhost:8080/api/weather?city=${userInfo.favorite_city}`
     );
     const weatherData = await response.json();
     setWeatherData(weatherData.data);
@@ -46,7 +44,7 @@ const Form = ({ setUserFavorites }) => {
         <input
           type="text"
           id="city"
-          name="city"
+          name="favorite_city"
           placeholder="Search for a city"
           autoComplete="off"
           onChange={(e) => handleInput(e)}
