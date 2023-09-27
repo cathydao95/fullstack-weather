@@ -1,6 +1,5 @@
-import express, { urlencoded } from "express";
+import express from "express";
 import cors from "cors";
-import path from "path";
 import "dotenv/config";
 import db from "./db/db-connection.js";
 
@@ -9,8 +8,7 @@ const PORT = 8080;
 
 // Configuring cors middleware
 app.use(cors());
-
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // //creates an endpoint for the route `/`
@@ -37,16 +35,87 @@ app.get("/api/weather", (req, res) => {
     });
 });
 
-// app.get("/api/", async (req, res) => {
-//   try {
-//     const { rows: events } = await db.query("SELECT * FROM events");
-//     console.log("lol", events);
-//     res.send(events);
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(400).json({ error });
-//   }
-// });
+// GET ALL USERS
+app.get("/api/v1/users", async (req, res) => {
+  try {
+    const { rows: users } = await db.query(
+      "SELECT * FROM users ORDER BY name ASC "
+    );
+    res.status(200).json({
+      status: "success",
+      results: users.length,
+      data: { users },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ error });
+  }
+});
+
+app.get("/api/v1/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { rows: users } = await db.query("SELECT * FROM users WHERE id=$1", [
+      id,
+    ]);
+    res.status(200).json({
+      status: "success",
+      data: { users },
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// CREATE USER
+app.post("/api/v1/users", async (req, res) => {
+  try {
+    const { name, city } = req.body;
+
+    const { rows: newUser } = await db.query(
+      "INSERT INTO users (name, favorite_city) VALUES ($1, $2) RETURNING *",
+      [name, city]
+    );
+    res.status(200).json({
+      status: "success",
+      data: { newUser },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ error });
+  }
+});
+
+app.put("/api/v1/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, city } = req.body;
+
+    const { rows: updatedUser } = await db.query(
+      "UPDATE users SET (name, favorite_city) = ($1, $2) WHERE id = $3 RETURNING *",
+      [name, city, id]
+    );
+    res.status(200).json({
+      status: "success",
+      data: { updatedUser },
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.delete("/api/v1/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedUser = await db.query("DELETE FROM users WHERE id = $1", [id]);
+    res.status(200).json({
+      status: "success",
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 app.listen(PORT, () =>
   console.log(`Server running on Port http://localhost:${PORT}`)
