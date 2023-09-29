@@ -50,6 +50,10 @@ const EditFavorites = ({
   }, []);
 
   const updateUserFav = async () => {
+    if (userInfo.name === "" || userInfo.favorite_city === "") {
+      alert("Please fill out all info");
+      return;
+    }
     try {
       const response = await fetch(
         `http://localhost:8080/api/v1/users/${editingId}`,
