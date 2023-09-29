@@ -23,8 +23,12 @@ const Favorites = ({ userFavorites, setUserFavorites }) => {
             return user.id !== id;
           })
         );
+      } else if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error occured while deleting data", error);
+    }
   };
 
   const handleEditClick = (e, id) => {

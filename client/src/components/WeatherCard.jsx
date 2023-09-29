@@ -25,8 +25,12 @@ const WeatherCard = ({
         } = await response.json();
         setUserFavorites((prevFavs) => [...prevFavs, newUser[0]]);
         setShowWeatherCard(false);
+      } else if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error occured while adding data", error);
+    }
   };
   return (
     <div className="weatherContainer">

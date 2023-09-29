@@ -27,14 +27,22 @@ const EditFavorites = ({
   };
 
   const getSingleUserFav = async () => {
-    const response = await fetch(
-      `http://localhost:8080/api/v1/users/${editingId}`
-    );
-    const {
-      data: { user },
-    } = await response.json();
-    setUserInfo(user[0]);
-    updateWeatherData(user[0].favorite_city);
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/v1/users/${editingId}`
+      );
+      if (response.ok) {
+        const {
+          data: { user },
+        } = await response.json();
+        setUserInfo(user[0]);
+        updateWeatherData(user[0].favorite_city);
+      } else if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+    } catch (error) {
+      console.error("Error occured while fetching data", error);
+    }
   };
 
   useEffect(() => {
@@ -42,24 +50,33 @@ const EditFavorites = ({
   }, []);
 
   const updateUserFav = async () => {
-    const response = await fetch(
-      `http://localhost:8080/api/v1/users/${editingId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-type": "application/JSON",
-        },
-        body: JSON.stringify(userInfo),
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/v1/users/${editingId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-type": "application/JSON",
+          },
+          body: JSON.stringify(userInfo),
+        }
+      );
+
+      if (response.ok) {
+        const {
+          data: { updatedUser },
+        } = await response.json();
+        let updatedFavs = userFavorites.map((fav) =>
+          fav.id === editingId ? updatedUser[0] : fav
+        );
+        setUserFavorites(updatedFavs);
+        updateWeatherData(updatedUser[0].favorite_city);
+      } else if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    );
-    const {
-      data: { updatedUser },
-    } = await response.json();
-    let updatedFavs = userFavorites.map((fav) =>
-      fav.id === editingId ? updatedUser[0] : fav
-    );
-    setUserFavorites(updatedFavs);
-    updateWeatherData(updatedUser[0].favorite_city);
+    } catch (error) {
+      console.error("Error occured while editing data", error);
+    }
   };
 
   return (
