@@ -1,5 +1,5 @@
 import React from "react";
-
+// FORM INPUT ROWS
 const InputRow = ({ nameValue, cityValue, onChange }) => {
   return (
     <div>

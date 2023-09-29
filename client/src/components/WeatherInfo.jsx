@@ -1,5 +1,6 @@
 import React from "react";
 
+// DISPLAYS WEATHER INFO UNDER FORM AND EDIT
 const WeatherInfo = ({ weatherData }) => {
   return (
     <div className="cityWeatherInfo">
