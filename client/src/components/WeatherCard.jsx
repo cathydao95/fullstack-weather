@@ -47,7 +47,7 @@ const WeatherCard = ({
           Cancel
         </button>
         <button className="btn" onClick={(e) => addUserFav(e)}>
-          Add to {userInfo.name}'s favorites{" "}
+          Add to {userInfo.name}'s favorites
         </button>
       </div>
       {data && data.name && <WeatherInfo weatherData={data} />}
