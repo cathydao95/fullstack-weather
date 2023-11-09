@@ -8,6 +8,7 @@ const Form = ({ setUserFavorites }) => {
   const [userInfo, setUserInfo] = useState({});
   const [weatherData, setWeatherData] = useState();
   const [showWeatherCard, setShowWeatherCard] = useState(false);
+  const [errors, setErrors] = useState(null);
 
   const handleInput = (e) => {
     setUserInfo((prevInfo) => {
@@ -16,6 +17,21 @@ const Form = ({ setUserFavorites }) => {
   };
 
   const populateData = async (city) => {
+    setErrors(null);
+    if (!userInfo.name && !userInfo.favorite_city) {
+      setErrors("Please enter a valid user name and city");
+      return;
+    }
+
+    if (!userInfo.name) {
+      setErrors("Please enter user's name");
+      return;
+    }
+    if (!userInfo.favorite_city) {
+      setErrors("Please enter user's favorite city");
+      return;
+    }
+
     let weatherData = await getWeatherForLocation(city);
     setWeatherData(weatherData.data);
     setShowWeatherCard(true);
@@ -24,6 +40,7 @@ const Form = ({ setUserFavorites }) => {
   return showWeatherCard ? (
     <WeatherCard
       userInfo={userInfo}
+      setUserInfo={setUserInfo}
       showWeatherCard={showWeatherCard}
       data={weatherData}
       setShowWeatherCard={setShowWeatherCard}
@@ -31,6 +48,7 @@ const Form = ({ setUserFavorites }) => {
     />
   ) : (
     <div>
+      {errors && <p className="errors">{errors}</p>}
       <div className="searchContainer">
         <InputRow onChange={(e) => handleInput(e)} />
         <button
