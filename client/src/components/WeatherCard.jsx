@@ -7,9 +7,11 @@ const WeatherCard = ({
   setShowWeatherCard,
   userInfo,
   setUserFavorites,
+  setUserInfo,
 }) => {
   const addUserFav = async (e) => {
     e.preventDefault();
+
     try {
       const response = await fetch("http://localhost:8080/api/v1/users", {
         method: "POST",
@@ -35,7 +37,13 @@ const WeatherCard = ({
   return (
     <div className="weatherContainer">
       <div className="btnContainer">
-        <button className="btn" onClick={() => setShowWeatherCard(false)}>
+        <button
+          className="btn"
+          onClick={() => {
+            setShowWeatherCard(false);
+            setUserInfo({});
+          }}
+        >
           Cancel
         </button>
         <button className="btn" onClick={(e) => addUserFav(e)}>
